@@ -74,10 +74,10 @@ export class GeoComponent implements OnInit {
         });
 
         // Drawing Choropleth
-
         const region = svg.append('g')
             .attr('class', 'region')
             .selectAll('path')
+            // @ts-ignore
             .data(t.feature(map, russia).features)
             .enter().append('path')
             .attr('d', path)
