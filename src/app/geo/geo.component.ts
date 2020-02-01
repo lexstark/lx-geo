@@ -1,8 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import * as d3 from 'd3';
 import * as t from 'topojson-client';
-import * as q from 'd3-queue';
-import {GeoMap, russiaMap, TopoGeometry} from './russia.map';
+import {russiaMap, TopoGeometry} from './russia.map';
 
 /**
  * http://bl.ocks.org/KoGor/5685876
@@ -138,6 +137,15 @@ export class GeoComponent implements OnInit {
         // city.append('text')
         //     .attr('x', 5)
         //     .text(d => d.City);
+
+
+        const zoomed = () => {
+            const transform = d3.event.transform;
+            svg.attr('transform', 'translate(' + transform.x + ',' + transform.y + ') scale(' + transform.k + ')');
+        }
+
+        const zoom = d3.zoom().on('zoom', zoomed);
+        svg.call(zoom);
     }
 
 
