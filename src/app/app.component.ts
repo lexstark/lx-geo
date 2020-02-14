@@ -2,6 +2,7 @@ import {AfterContentInit, Component, OnDestroy, OnInit, ViewChild} from '@angula
 import {AreaChartComponent} from './app-area-chart/area-chart.component';
 import * as d3 from 'd3';
 import {Point} from './geo/geo.component';
+import {ChartPointSeries, GeoExtra} from './geo2/geo2.component';
 
 export class DeliveryMetric {
     state: string;
@@ -33,6 +34,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentInit {
     displayedColumns = ['legend', 'stateDisplayValue', 'mean', 'stdDev'];
     mockData = this.generate();
 
+    mockData2: ChartPointSeries[] = [];
+
     ngOnInit() {
     }
 
@@ -59,6 +62,19 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentInit {
 
     ngAfterContentInit() {
         // this.initialize();
+    }
+
+    generateData2() {
+        const iso2 = [
+            'AMU', 'ARK', 'AST', 'BEL', 'BRY', 'VLA', 'VGG', 'VLG', 'VOR', 'IVA', 'IRK', 'KGD', 'KLU', 'KEM', 'KIR', 'KOS', 'KGN', 'KRS', 'LEN', 'LIP', 'MAG', 'MOS', 'MUR', 'NIZ', 'NGR', 'NVS', 'OMS', 'ORE', 'ORL', 'PNZ', 'PSK', 'ROS', 'RYA', 'SAM', 'SAR', 'SAK', 'SVE', 'SMO', 'TAM', 'TVE', 'TOM', 'TUL', 'TYU', 'ULY', 'CHE', 'YAR', 'AD', 'BA', 'BU', 'DA', 'IN', 'KB', 'KL', 'KC', 'KR', 'ME', 'MO', 'AL', 'KO', 'SA', 'SE', 'TA', 'TY', 'UD', 'KK', 'CE', 'CU', 'ALT', 'ZAB', 'KAM', 'KDA', 'KYA', 'PER', 'PRI', 'STA', 'KHA', 'NEN', 'KHM', 'CHU', 'YAN', 'SPE', 'MOW', 'YEV', 'CRI', 'SEV',
+        ];
+        this.mockData2 = iso2.map(i => <ChartPointSeries> {
+            name: i,
+            extra: <GeoExtra> {
+                value: randomInt(0, 10000),
+                iso2: i
+            }
+        });
     }
 
     generateData() {

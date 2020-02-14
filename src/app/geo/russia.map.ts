@@ -6,6 +6,8 @@ export interface GeoMap {
 }
 
 export interface TopoGeometry {
+    type: string;
+    geometry: any;
     properties: {
         NAME_1: string,
         HASC_1: string,

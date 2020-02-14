@@ -57,8 +57,10 @@ export class GeoComponent implements OnInit {
 
         // Reading map file and data
 
+        // https://github.com/logvik/d3_russian_map/blob/master/map_assets/district.json
         // const map = await d3.json('/assets/russia_1e-7sr.json');
         // const russia = map.objects.russia;
+
 
         // https://github.com/zarkzork/russia-topojson
         const map = await d3.json('/assets/russia2.json');
