@@ -1,0 +1,8 @@
+<svg [attr.height]="height" [attr.width]="width" class="geo-charts">
+    <g class="region">
+        <path *ngFor="let item of items$ | async;  trackBy: trackBy"
+              [attr.d]="item.data"
+              [attr.fill]="item.fill">
+        </path>
+    </g>
+</svg>
