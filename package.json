@@ -13,6 +13,7 @@
     "private": true,
     "dependencies": {
         "@angular/animations": "~8.2.14",
+        "@angular/cdk": "^8.2.2",
         "@angular/common": "~8.2.14",
         "@angular/compiler": "~8.2.14",
         "@angular/core": "~8.2.14",
@@ -20,6 +21,7 @@
         "@angular/platform-browser": "~8.2.14",
         "@angular/platform-browser-dynamic": "~8.2.14",
         "@angular/router": "~8.2.14",
+        "@swimlane/ngx-charts": "^13.0.2",
         "d3": "^5.15.0",
         "rxjs": "~6.4.0",
         "topojson-client": "^3.1.0",

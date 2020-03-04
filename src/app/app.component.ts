@@ -2,7 +2,7 @@ import {AfterContentInit, Component, OnDestroy, OnInit, ViewChild} from '@angula
 import {AreaChartComponent} from './app-area-chart/area-chart.component';
 import * as d3 from 'd3';
 import {Point} from './geo/geo.component';
-import {ChartPointSeries, GeoExtra} from './geo2/geo2.component';
+import {ChartPointSeries, GeoChartPointSeriesExtra} from './geo2/geo2.component';
 
 export class DeliveryMetric {
     state: string;
@@ -70,7 +70,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentInit {
         ];
         this.mockData2 = iso2.map(i => <ChartPointSeries> {
             name: i,
-            extra: <GeoExtra> {
+            extra: <GeoChartPointSeriesExtra> {
                 value: randomInt(0, 10000),
                 iso2: i
             }

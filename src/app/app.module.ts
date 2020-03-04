@@ -7,6 +7,8 @@ import {GeoComponent} from './geo/geo.component';
 import {Geo2Component} from './geo2/geo2.component';
 import {HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {TooltipModule} from '@swimlane/ngx-charts';
+
 
 @NgModule({
     declarations: [
@@ -18,7 +20,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     imports: [
         BrowserModule,
         HttpClientModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        TooltipModule
     ],
     providers: [],
     bootstrap: [AppComponent]

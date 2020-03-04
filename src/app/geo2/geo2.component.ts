@@ -5,12 +5,15 @@ import * as geoJson from 'GeoJSON';
 import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {map} from 'rxjs/operators';
+import {isNullOrUndefined} from 'util';
+import {TopoJsonService} from './topojson.service';
 
 export interface GeoItem {
     data: any;
     iso2: string;
     fill: any;
     value: number;
+    extra: any;
 }
 
 @Component({
@@ -19,8 +22,7 @@ export interface GeoItem {
     styleUrls: ['./geo2.component.css'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class Geo2Component implements OnInit, OnChanges, AfterViewInit {
-
+export class Geo2Component implements OnInit, AfterViewInit {
     public width: number = 960;
     public height: number = 500;
 
@@ -28,18 +30,14 @@ export class Geo2Component implements OnInit, OnChanges, AfterViewInit {
     private _mapPath: d3.GeoPath;
     private _projection: d3.GeoConicProjection;
 
-    private _topoJson$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
     private _series$: Subject<ChartPointSeries[]> = new Subject();
-    private items$: Observable<GeoItem>;
+    public items$: Observable<GeoItem>;
 
-    constructor(private _httpClient: HttpClient) {
+    constructor(private _topoJsonService: TopoJsonService) {
     }
-
-    private _series: ChartPointSeries[] = [];
 
     @Input()
     public set series(series: ChartPointSeries[]) {
-        this._series = series;
         this._series$.next(series);
     }
 
@@ -49,35 +47,42 @@ export class Geo2Component implements OnInit, OnChanges, AfterViewInit {
 
     ngOnInit() {
         this.setUpMapPath(this.width, this.height);
-        this.loadTopoJson();
-
         this.items$ = combineLatest(
             this._series$,
-            this._topoJson$)
+            this._topoJsonService.russia$)
             .pipe(
                 map(([series, topoJson]) => {
                     this.setUpColor(series.map(s => s.extra.value));
 
                     // @ts-ignore
                     const features = t.feature(topoJson, topoJson.objects.name).features;
+                    const chartPointSeriesByIso2: { [id: string]: ChartPointSeries } = {};
+                    series.forEach(d => {
+                        const extra = <GeoChartPointSeriesExtra> d.extra;
+                        chartPointSeriesByIso2[d.extra.iso2] = d;
+                    });
+
                     const items = features.map((feature: geoJson.Feature) => {
 
-                        const valueById = {};
-                        const nameById = {};
+                        const chartPointSeries = chartPointSeriesByIso2[feature.properties.ISO_2];
+                        if (isNullOrUndefined(chartPointSeries)) {
+                            return <GeoItem> {
+                                data: this._mapPath(feature),
+                                fill: this._color(0),
+                                iso2: feature.properties.ISO_2,
+                                value: 0,
+                            };
+                        }
 
-                        series.forEach(d => {
-                            valueById[d.extra.iso2] = +d.extra.value;
-                            nameById[d.extra.iso2] = d.name;
-                        });
-
-                        const value = valueById[feature.properties.ISO_2] || 0;
-                        const fill = this._color(value);
+                        const extra = <GeoChartPointSeriesExtra> chartPointSeries.extra;
+                        const fill = this._color(extra.value);
 
                         const item = <GeoItem> {
                             data: this._mapPath(feature),
                             fill: fill,
                             iso2: feature.properties.ISO_2,
-                            value: value
+                            value: extra.value,
+                            extra: extra
                         };
 
                         return item;
@@ -94,7 +99,7 @@ export class Geo2Component implements OnInit, OnChanges, AfterViewInit {
     private setUpColor(values: number[]) {
         const fullBlue: Readonly<string[]> = ['#E1F5FE', '#B3E5FC', '#81D4FA', '#4FC3F7', '#29B6F6', '#03A9F4', '#039BE5', '#0288D1', '#0288D1', '#01579B'];
 
-        const gradientBlue = ['#E1F5FE', '#01579B'];
+        const gradientBlue = ['#C5CFD4', '#2163FF'];
         const gradientBlue2 = ['#FFFFFF', '#01579B'];
         const gradientBlueRed = ['#447AD0', '#FF0000'];
 
@@ -104,22 +109,15 @@ export class Geo2Component implements OnInit, OnChanges, AfterViewInit {
         //     // @ts-ignore
         //     .range(gradientBlue2);
 
-        // this._color = d3.scaleLinear()
-        //     .domain(d3.extent(values))
-        //     .range(gradientBlue);
-
-        this._color = d3.scaleQuantize()
+        this._color = d3.scaleLinear()
             .domain(d3.extent(values))
             // @ts-ignore
-            .range(fullBlue);
-    }
+            .range(gradientBlue);
 
-    private loadTopoJson() {
-        return this._httpClient
-            .get('../assets/russia2.json')
-            .subscribe(json => {
-                this._topoJson$.next(json);
-            });
+        // this._color = d3.scaleQuantize()
+        //     .domain(d3.extent(values))
+        //     // @ts-ignore
+        //     .range(fullBlue);
     }
 
     private applyZoom() {
@@ -129,7 +127,7 @@ export class Geo2Component implements OnInit, OnChanges, AfterViewInit {
         const zoomed = () => {
             const {transform} = d3.event;
             g.attr('transform', transform);
-            g.attr('stroke-width', 1 / transform.k);
+            // g.attr('stroke-width', 1 / transform.k);
         };
 
         const zoom = d3.zoom()
@@ -169,7 +167,7 @@ export interface ChartPointSeries {
     readonly extra: any;
 }
 
-export interface GeoExtra {
+export interface GeoChartPointSeriesExtra {
     value: number;
     iso2: string;
 }

@@ -2,7 +2,21 @@
     <g class="region">
         <path *ngFor="let item of items$ | async;  trackBy: trackBy"
               [attr.d]="item.data"
-              [attr.fill]="item.fill">
+              [attr.fill]="item.fill"
+              [tooltipCloseOnClickOutside]="true"
+              [tooltipContext]="item"
+              [tooltipPlacement]="'right'"
+              [tooltipShowCaret]="true"
+              [tooltipTemplate]="tooltipTemplate"
+              [tooltipType]="'popover'"
+              focusable="false"
+              ngx-tooltip>
         </path>
     </g>
 </svg>
+
+<ng-template #tooltipTemplate let-model="model">
+    <div class="tooltip-content">
+        Количество упоминания в {{model.iso2}} {{model.value}}
+    </div>
+</ng-template>

@@ -1,4 +1,52 @@
-path:hover{
+path:hover {
     opacity: 0.5;
 }
+
+path:focus {
+    outline: none;
+}
+
+.tooltip-content {
+    margin: 12px 0 13px;
+    padding: 0 15px;
+    width: 200px;
+    height: 300px;
+}
+
+tooltip-content span {
+    display: inline-block;
+    text-overflow: ellipsis;
+    max-width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+tooltip-content span:last-child {
+    float: right;
+    margin-left: 20px;
+}
+
+tooltip-content.header {
+    font-weight: bold;
+    text-align: center;
+}
+
+tooltip-content.gridded {
+    display: grid;
+    grid-template-areas: 'name count';
+    text-align: left;
+}
+
+tooltip-content > span:first-child {
+    grid-area: name;
+    max-width: inherit;
+    text-align: left;
+}
+
+tooltip-content > span:last-child {
+    grid-area: count;
+    text-align: right;
+    justify-self: right;
+}
+
 
